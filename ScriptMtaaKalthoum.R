@@ -99,3 +99,23 @@ vis_miss(data)
 # Exemple outliers avec la variable 'family_size'
 boxplot(data$family_size, main = "Boîte à Moustaches pour l'Âge")
 
+
+#Partie de l'analyse uni-variée:
+
+#Les variables quantitatives
+#Représentations graphiques:
+hist(data$age, main = "Histogramme de l'âge", xlab = "Âge", col = "lightblue")
+boxplot(data$age, main = "Boîte à moustaches de l'age")
+
+#Test de normalité:
+shapiro.test(data$age)
+# OU la méthode:
+qqnorm(data$age)
+qqline(data$age)
+
+#Les variables qualitatives
+table_sexe <- table(data$sex)
+barplot(table_sexe, main = "Distribution des sexes", xlab = "Sexe", ylab = "Fréquence")
+table_famille <- table(data$family_size)
+barplot(table_famille, main = "Taille de la famille", xlab = "Taille", ylab = "Fréquence")
+
