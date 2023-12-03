@@ -68,6 +68,12 @@ View(data)
 #Transformation du dataset en dataframe
 data <- as.data.frame(data)
 
+
+# Arrondir les valeurs entières
+numeric_cols <- sapply(data, is.numeric)
+data[, numeric_cols] <- lapply(data[, numeric_cols], round)
+View(data)
+
 # Gestion des missing values: 
 
 #Nombre de valeurs NA par variable avec la librairie VisDat
@@ -86,9 +92,9 @@ vis_miss(data)
 data <- data %>%
   mutate_if(is.character, function(x) ifelse(is.na(x), names(sort(table(x), decreasing = TRUE)[1]), x))
 vis_miss(data)
-
 #Le pourcentage de missing values est maintenant à 0%
-View(data)
+
+# Gestion des Outliers:
 
 # Exemple outliers avec la variable 'family_size'
 boxplot(data$family_size, main = "Boîte à Moustaches pour l'Âge")
