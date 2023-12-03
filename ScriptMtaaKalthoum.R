@@ -1,66 +1,94 @@
 #Partie Data Import and Exploration
 
 #Importation des données
-data <- read.csv(file = file.choose() , header = TRUE , sep = ';')
+data <- read.csv(file = file.choose(), header = TRUE, sep = ';', na.strings = c("", "NA"))
 print(data)
 
 #Compréhension des données
-view(data)
+View(data)
 dim(data)
-str(data)
 summary(data)
 
 #Etudier les variables disponibles
+library(dplyr)
 glimpse(data)
 
-#Exemple des valeurs uniques
+# Vérifier le type des variables
+str(data)
+
+#Exemple des valeurs uniques de chaque colonne
 unique(data$sex)
 unique(data$age)
 unique(data$parent_status)
 unique(data$travel_time)
 unique(data$mother_education)
 
-view(data)
 #installer le package tidyverse
 library(tidyverse)
 
-Data_Students <- data
-
-#Partie Data Cleaning:
+View(data)
 
 #Remplacer les colonnes par leurs vraies valeurs
-Data_Students$school <- Data_Students$sex
-Data_Students$sex <- Data_Students$age
-Data_Students$age <- Data_Students$family_size
-Data_Students$family_size <- Data_Students$parent_status
-Data_Students$parent_status <- Data_Students$mother_education
-Data_Students$mother_education <- Data_Students$travel_time
-Data_Students$travel_time <- Data_Students$study_time
-Data_Students$study_time <- Data_Students$class_failures
-Data_Students$class_failures <- Data_Students$school_support
-Data_Students$school_support <- Data_Students$family_support
-Data_Students$family_support <- Data_Students$extra_paid_classes
-Data_Students$extra_paid_classes <- Data_Students$higher_ed
-Data_Students$higher_ed<- Data_Students$free_time
-Data_Students$free_time <- Data_Students$health
-Data_Students$health <- Data_Students$absences
-Data_Students$absences <- Data_Students$final_grade
-Data_Students$final_grade <- Data_Students$x
+data$school <- data$sex
+data$sex <- data$age
+data$age <- data$family_size
+data$family_size <- data$parent_status
+data$parent_status <- data$mother_education
+data$mother_education <- data$travel_time
+data$travel_time <- data$study_time
+data$study_time <- data$class_failures
+data$class_failures <- data$school_support
+data$school_support <- data$family_support
+data$family_support <- data$extra_paid_classes
+data$extra_paid_classes <- data$higher_ed
+data$higher_ed<- data$free_time
+data$free_time <- data$health
+data$health <- data$absences
+data$absences <- data$final_grade
+data$final_grade <- data$x
 
 
 #Eliminer la variable X qui est supplémentaire
-Data_Students <- Data_Students[, -which(names(Data_Students) == "X")]
+data <- data[, -which(names(data) == "X")]
+View(data)
 
-view(Data_Students)
+#Remplacer les valeurs manquantes par NA
+library(dplyr)
+library(stringr)
+
+data <- data %>%
+  mutate_all(~ ifelse(str_replace_all(as.character(.), "\\s+", "") == "", NA, .))
+
+#Visualiser les données après cette opération
+View(data)
 
 #Exportation de ce dataset organisé
-#write.csv(Data_Students, file = "C:\\Users\\admin\\Desktop\\Studies\\4ème\\Stat\\ProjetStatistique\\your_filename.csv", row.names = FALSE)
+#write.csv(data, file = "C:\\Users\\admin\\Desktop\\Studies\\4ème\\Stat\\ProjetStatistique\\your_filename.csv", row.names = FALSE)
+
+#Transformation du dataset en dataframe
+data <- as.data.frame(data)
 
 # Gestion des missing values: 
-#Nombre de valeurs manquantes par variable avec la librairie VisDat
+
+#Nombre de valeurs NA par variable avec la librairie VisDat
 library(visdat)
-colSums(is.na(Data_Students))
-vis_miss(Data_Students)
+colSums(is.na(data))
+vis_miss(data)
+
+
+#Imputation des valeurs NA numériques:
+data <- data %>%
+  mutate_if(is.numeric, function(x) ifelse(is.na(x), mean(x, na.rm = TRUE), x))
+vis_miss(data)
+# Suite à cette opération, le pourcentage des données NA a changé de 1.7% à 1.3%
+
+# Imputation des valeurs NA de type char en utilisant le mode (most frequent value):
+data <- data %>%
+  mutate_if(is.character, function(x) ifelse(is.na(x), names(sort(table(x), decreasing = TRUE)[1]), x))
+vis_miss(data)
+
+#Le pourcentage de missing values est maintenant à 0%
+View(data)
 
 # Exemple outliers avec la variable 'family_size'
 boxplot(data$family_size, main = "Boîte à Moustaches pour l'Âge")
