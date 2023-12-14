@@ -220,12 +220,13 @@ barplot(table_supprt_family, main = "", xlab = "Soutien familiale", ylab = "Fré
 # Analyse bivariée
 # Quanti-Quanti
 plot(data$final_grade, data$free_time, main = "Nuage de points - Corrélation", xlab = "", ylab = "", col = "blue", pch = 16)
-cor.test(data$final_grade, data$free_time)  # faible corrélation
+cor.test(data$final_grade, data$free_time ,method = "spearman")  # faible corrélation
 plot(data$final_grade, data$absences, main = "Nuage de points - Corrélation", xlab = "", ylab = "", col = "blue", pch = 16)
-cor.test(data$final_grade, data$absences)  # faible corrélation
+cor.test(data$final_grade, data$absences, method = "spearman")  # faible corrélation
 plot(data$final_grade, data$class_failures, main = "Nuage de points - Corrélation", xlab = "Final Grade", ylab = "Nombre de redoublements", col = "blue", pch = 16)
-cor.test(data$final_grade, data$class_failures)  # Il y a une significativité et une corrélation négative
-cor.test(data$final_grade, data$health)  # Très faible corrélation
+cor.test(data$final_grade, data$class_failures, method = "spearman")  # Il y a une significativité et une corrélation négative
+plot(data$final_grade, data$class_failures, main = "Nuage de points - Corrélation", xlab = "", ylab = "", col = "blue", pch = 16)
+cor.test(data$final_grade, data$health, method = "spearman")  # Très faible corrélation
 plot(data$final_grade, data$health, main = "Nuage de points - Corrélation", xlab = "", ylab = "", col = "blue", pch = 16)
 
 # Quanti-quali
